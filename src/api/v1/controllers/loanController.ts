@@ -47,3 +47,31 @@ export const getLoanByIdHandler = (
         data: loan,
     });
 };
+
+/**
+ * Creates a new loan application.
+ *
+ * @param req - Express request object.
+ * @param res - Express response object.
+ */
+export const createLoanHandler = (
+    req: Request,
+    res: Response,
+): void => {
+    const { applicant, amount } = req.body;
+
+    const newLoan = {
+        id: loanApplications.length + 1,
+        applicant,
+        amount,
+        status: "pending",
+        createdAt: new Date().toISOString(),
+    };
+
+    loanApplications.push(newLoan);
+
+    res.status(201).json({
+        message: "Loan application created",
+        data: newLoan,
+    });
+};
