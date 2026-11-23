@@ -75,3 +75,36 @@ export const createLoanHandler = (
         data: newLoan,
     });
 };
+
+/**
+ * Updates an existing loan application.
+ *
+ * @param req - Express request object.
+ * @param res - Express response object.
+ */
+export const updateLoanHandler = (
+    req: Request,
+    res: Response,
+): void => {
+    const loanId: number = Number(req.params.id);
+    const { status } = req.body;
+
+    const loan = loanApplications.find(
+        (application) => application.id === loanId,
+    );
+
+    if (!loan) {
+        res.status(404).json({
+            message: "Loan application not found",
+        });
+
+        return;
+    }
+
+    loan.status = status;
+
+    res.status(200).json({
+        message: "Loan application updated",
+        data: loan,
+    });
+};
