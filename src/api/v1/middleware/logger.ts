@@ -49,8 +49,4 @@ const errorLogger = morgan(
 // Development console logger
 const consoleLogger = morgan("dev");
 
-export {
-    accessLogger,
-    errorLogger,
-    consoleLogger,
-};
+export { accessLogger, errorLogger, consoleLogger };
