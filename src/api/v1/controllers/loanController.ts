@@ -108,3 +108,34 @@ export const updateLoanHandler = (
         data: loan,
     });
 };
+
+/**
+ * Deletes a loan application.
+ *
+ * @param req - Express request object.
+ * @param res - Express response object.
+ */
+export const deleteLoanHandler = (
+    req: Request,
+    res: Response,
+): void => {
+    const loanId: number = Number(req.params.id);
+
+    const loanIndex = loanApplications.findIndex(
+        (application) => application.id === loanId,
+    );
+
+    if (loanIndex === -1) {
+        res.status(404).json({
+            message: "Loan application not found",
+        });
+
+        return;
+    }
+
+    loanApplications.splice(loanIndex, 1);
+
+    res.status(200).json({
+        message: "Loan application deleted",
+    });
+};
