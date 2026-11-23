@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from "express";
+import loanRoutes from "./api/v1/routes/loanRoutes";
 
 const app: Express = express();
 
@@ -12,5 +13,7 @@ app.get("/api/v1/health", (_req: Request, res: Response) => {
         version: "1.0.0",
     });
 });
+
+app.use("/api/v1/loans", loanRoutes);
 
 export default app;
