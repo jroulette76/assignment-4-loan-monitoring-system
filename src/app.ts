@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import loanRoutes from "./api/v1/routes/loanRoutes";
+import userRoutes from "./api/v1/routes/userRoutes";
 import { consoleLogger } from "./api/v1/middleware/logger";
 import errorHandler from "./api/v1/middleware/errorHandler";
 
@@ -19,6 +20,8 @@ app.get("/api/v1/health", (_req: Request, res: Response) => {
 });
 
 app.use("/api/v1/loans", loanRoutes);
+
+app.use("/api/v1/users", userRoutes);
 
 app.use(errorHandler);
 
