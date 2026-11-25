@@ -7,16 +7,40 @@ import {
     deleteLoanHandler,
 } from "../controllers/loanController";
 
+import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
+
 const router: Router = express.Router();
 
-router.get("/", getLoansHandler);
+router.get("/", authenticate, getLoansHandler);
 
-router.get("/:id", getLoanByIdHandler);
+router.get("/:id", authenticate, getLoanByIdHandler);
 
-router.post("/", createLoanHandler);
+router.post(
+    "/",
+    authenticate,
+    isAuthorized({
+        hasRole: ["manager", "admin"],
+    }),
+    createLoanHandler,
+);
 
-router.put("/:id", updateLoanHandler);
+router.put(
+    "/:id",
+    authenticate,
+    isAuthorized({
+        hasRole: ["manager", "admin"],
+    }),
+    updateLoanHandler,
+);
 
-router.delete("/:id", deleteLoanHandler);
+router.delete(
+    "/:id",
+    authenticate,
+    isAuthorized({
+        hasRole: ["admin"],
+    }),
+    deleteLoanHandler,
+);
 
 export default router;
