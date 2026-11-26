@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import isAuthorized from "../src/api/v1/middleware/authorize";
+import { AuthorizationError } from "../src/api/v1/errors/errors";
 
 describe("Authorization Middleware", () => {
     let mockRequest: Partial<Request>;
@@ -26,7 +27,7 @@ describe("Authorization Middleware", () => {
 
         // Arrange
         mockResponse.locals = {
-            uid: "user123",
+            uid: "batman204",
             role: "admin",
         };
 
@@ -44,5 +45,34 @@ describe("Authorization Middleware", () => {
         // Assert
         expect(nextFunction)
             .toHaveBeenCalledWith();
+    });
+
+    it("should pass AuthorizationError to next when role is missing", () => {
+
+        // Arrange
+        mockResponse.locals = {
+            uid: "superman204",
+        };
+
+        const middleware = isAuthorized({
+            hasRole: ["admin"],
+        });
+
+        // Act
+        middleware(
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction as NextFunction,
+        );
+
+        // Assert
+        const error =
+            nextFunction.mock.calls[0][0];
+
+        expect(error)
+            .toBeInstanceOf(AuthorizationError);
+
+        expect(error.code)
+            .toBe("ROLE_NOT_FOUND");
     });
 });
