@@ -75,4 +75,34 @@ describe("Authorization Middleware", () => {
         expect(error.code)
             .toBe("ROLE_NOT_FOUND");
     });
+
+    it("should pass AuthorizationError to next when user has insufficient role", () => {
+
+        // Arrange
+        mockResponse.locals = {
+            uid: "user123",
+            role: "officer",
+        };
+
+        const middleware = isAuthorized({
+            hasRole: ["admin"],
+        });
+
+        // Act
+        middleware(
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction as NextFunction,
+        );
+
+        // Assert
+        const error =
+            nextFunction.mock.calls[0][0];
+
+        expect(error)
+            .toBeInstanceOf(AuthorizationError);
+
+        expect(error.code)
+            .toBe("INSUFFICIENT_ROLE");
+    });
 });
