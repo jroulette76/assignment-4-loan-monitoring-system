@@ -66,4 +66,27 @@ describe("Error Handler Middleware", () => {
         expect(jsonMock)
             .toHaveBeenCalled();
     });
+
+    it("should return UNKNOWN_ERROR for a standard Error", () => {
+
+        // Arrange
+        const error = new Error(
+            "Something went wrong",
+        );
+
+        // Act
+        errorHandler(
+            error,
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction as NextFunction,
+        );
+
+        // Assert
+        expect(statusMock)
+            .toHaveBeenCalledWith(500);
+
+        expect(jsonMock)
+            .toHaveBeenCalled();
+    });
 });
