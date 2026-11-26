@@ -80,7 +80,7 @@ describe("Authorization Middleware", () => {
 
         // Arrange
         mockResponse.locals = {
-            uid: "user123",
+            uid: "flash204",
             role: "officer",
         };
 
@@ -104,5 +104,34 @@ describe("Authorization Middleware", () => {
 
         expect(error.code)
             .toBe("INSUFFICIENT_ROLE");
+    });
+
+    it("should call next when allowSameUser is enabled and ids match", () => {
+
+        // Arrange
+        mockRequest.params = {
+            id: "flash204",
+        };
+
+        mockResponse.locals = {
+            uid: "flash204",
+            role: "officer",
+        };
+
+        const middleware = isAuthorized({
+            hasRole: ["admin"],
+            allowSameUser: true,
+        });
+
+        // Act
+        middleware(
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction as NextFunction,
+        );
+
+        // Assert
+        expect(nextFunction)
+            .toHaveBeenCalledWith();
     });
 });
