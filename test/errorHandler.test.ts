@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import errorHandler from "../src/api/v1/middleware/errorHandler";
+import { AuthenticationError } from "../src/api/v1/errors/errors";
 
 describe("Error Handler Middleware", () => {
     let mockRequest: Partial<Request>;
@@ -37,6 +38,30 @@ describe("Error Handler Middleware", () => {
         // Assert
         expect(statusMock)
             .toHaveBeenCalledWith(500);
+
+        expect(jsonMock)
+            .toHaveBeenCalled();
+    });
+
+    it("should return AppError status code and error details", () => {
+
+        // Arrange
+        const error = new AuthenticationError(
+            "Unauthorized",
+            "TOKEN_INVALID",
+        );
+
+        // Act
+        errorHandler(
+            error,
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction as NextFunction,
+        );
+
+        // Assert
+        expect(statusMock)
+            .toHaveBeenCalledWith(401);
 
         expect(jsonMock)
             .toHaveBeenCalled();
