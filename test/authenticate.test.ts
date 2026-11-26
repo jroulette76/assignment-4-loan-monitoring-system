@@ -79,4 +79,40 @@ describe("Authentication Middleware", () => {
         expect(error)
             .toBeInstanceOf(AuthenticationError);
     });
+
+    it("should call next and set user data when token is valid", async () => {
+
+        // Arrange
+        mockRequest.headers = {
+            authorization: "Bearer valid-token",
+        };
+
+        (auth.verifyIdToken as jest.Mock)
+            .mockResolvedValueOnce({
+                uid: "user123",
+                role: "admin",
+            });
+
+        // Act
+        await authenticate(
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction as NextFunction,
+        );
+
+        // Assert
+        expect(auth.verifyIdToken)
+            .toHaveBeenCalledWith(
+                "valid-token",
+            );
+
+        expect(mockResponse.locals)
+            .toEqual({
+                uid: "user123",
+                role: "admin",
+            });
+
+        expect(nextFunction)
+            .toHaveBeenCalledWith();
+    });
 });
